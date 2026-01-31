@@ -10,9 +10,40 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_31_053954) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_31_062247) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "reservations", force: :cascade do |t|
+    t.string "contact_email"
+    t.string "contact_name"
+    t.string "contact_phone"
+    t.datetime "created_at", null: false
+    t.date "date"
+    t.integer "party_size"
+    t.integer "status"
+    t.bigint "table_id", null: false
+    t.bigint "time_slot_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["table_id"], name: "index_reservations_on_table_id"
+    t.index ["time_slot_id"], name: "index_reservations_on_time_slot_id"
+    t.index ["user_id"], name: "index_reservations_on_user_id"
+  end
+
+  create_table "tables", force: :cascade do |t|
+    t.integer "capacity"
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "time_slots", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.time "end_time"
+    t.time "start_time"
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -21,4 +52,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_31_053954) do
     t.integer "role"
     t.datetime "updated_at", null: false
   end
+
+  add_foreign_key "reservations", "tables"
+  add_foreign_key "reservations", "time_slots"
+  add_foreign_key "reservations", "users"
 end

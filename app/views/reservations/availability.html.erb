@@ -1,0 +1,74 @@
+<div class="container py-5">
+  <h1 class="fw-bold mb-4">Check Availability</h1>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <%= form_with url: availability_path, method: :get, local: true, class: "row g-3 align-items-end" do %>
+        <div class="col-auto">
+          <%= label_tag :date, "Select Date", class: "form-label" %>
+          <%= date_field_tag :date, @date, class: "form-control", min: Date.today %>
+        </div>
+        <div class="col-auto">
+          <%= submit_tag "Check Availability", class: "btn btn-dark" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <h4 class="mb-3">Availability for <%= @date.strftime("%A, %B %d, %Y") %></h4>
+
+  <% if @time_slots.empty? %>
+    <div class="alert alert-warning">
+      No time slots have been configured yet. Please check back later.
+    </div>
+  <% elsif @tables.empty? %>
+    <div class="alert alert-warning">
+      No tables have been configured yet. Please check back later.
+    </div>
+  <% else %>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead class="table-light">
+          <tr>
+            <th>Time Slot</th>
+            <th>Available Tables</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @time_slots.each do |slot| %>
+            <% available_tables = @availability[slot.id] %>
+            <% is_past = @date == Date.today && slot.start_time.strftime("%H:%M") < (Time.now + 2.hours).strftime("%H:%M") %>
+            <tr class="<%= is_past ? 'table-secondary' : '' %>">
+              <td><%= slot.display_time %></td>
+              <td>
+                <% if is_past %>
+                  <span class="text-muted">Not available</span>
+                <% elsif available_tables.any? %>
+                  <span class="text-success"><%= available_tables.count %> table(s) available</span>
+                  <br>
+                  <small class="text-muted">
+                    <% available_tables.each do |table| %>
+                      <%= table.name %> (up to <%= table.capacity %> people)<%= ", " unless table == available_tables.last %>
+                    <% end %>
+                  </small>
+                <% else %>
+                  <span class="text-danger">Fully booked</span>
+                <% end %>
+              </td>
+              <td>
+                <% if is_past %>
+                  <span class="text-muted">-</span>
+                <% elsif available_tables.any? %>
+                  <%= link_to "Reserve", new_reservation_path(date: @date, time_slot_id: slot.id), class: "btn btn-sm btn-dark" %>
+                <% else %>
+                  <span class="text-muted">-</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>
