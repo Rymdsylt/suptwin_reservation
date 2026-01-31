@@ -2,14 +2,12 @@
 # development, test). The code here should be idempotent so that it can be executed at any point in every environment.
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
 
-# Create admin user
 admin = User.find_or_create_by!(email: "admin@suptwin.com") do |user|
   user.password = "admin123"
   user.role = :admin
 end
 puts "Admin user created: #{admin.email}"
 
-# Create test customer
 customer = User.find_or_create_by!(email: "customer@test.com") do |user|
   user.password = "customer123"
   user.role = :customer
