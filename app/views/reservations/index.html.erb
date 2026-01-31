@@ -1,0 +1,45 @@
+<div class="container py-5">
+  <h1 class="fw-bold mb-4">My Reservations</h1>
+
+  <% if @reservations.empty? %>
+    <div class="alert alert-info">You have no reservations yet.</div>
+  <% else %>
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Date</th>
+            <th>Time Slot</th>
+            <th>Table</th>
+            <th>Party Size</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @reservations.each do |reservation| %>
+            <tr>
+              <td><%= reservation.date.strftime('%A, %b %d, %Y') %></td>
+              <td><%= reservation.time_slot.display_time %></td>
+              <td><%= reservation.table.name %></td>
+              <td><%= reservation.party_size %></td>
+              <td>
+                <% if reservation.cancelled? %>
+                  <span class="badge bg-danger">Cancelled</span>
+                <% else %>
+                  <span class="badge bg-success">Confirmed</span>
+                <% end %>
+              </td>
+              <td>
+                <%= link_to "View", reservation_path(reservation), class: "btn btn-sm btn-outline-dark" %>
+                <% unless reservation.cancelled? %>
+                  <%= button_to "Cancel", cancel_reservation_path(reservation), method: :patch, data: { confirm: "Are you sure you want to cancel this reservation?" }, class: "btn btn-sm btn-outline-danger ms-2" %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>
