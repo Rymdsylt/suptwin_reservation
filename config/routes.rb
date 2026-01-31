@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :admin_time_slots, except: [:show]
   root "pages#home"
 
   get "login", to: "sessions#new"
