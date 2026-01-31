@@ -15,11 +15,12 @@
     <div class="row g-3">
       <div class="col-md-4">
         <%= f.label :date, class: "form-label" %>
-        <%= f.date_field :date, value: @reservation.date || Date.today, class: "form-control", min: Date.today, required: true %>
+        <%= f.date_field :date, value: @reservation.date || Date.today, class: "form-control", min: Date.today, required: true, readonly: true %>
       </div>
       <div class="col-md-4">
         <%= f.label :time_slot_id, "Time Slot", class: "form-label" %>
-        <%= f.collection_select :time_slot_id, TimeSlot.all.order(:start_time), :id, :display_time, { prompt: "Select time slot" }, { class: "form-select", required: true } %>
+        <%= hidden_field_tag 'reservation[time_slot_id]', @reservation.time_slot_id %>
+        <input type="text" class="form-control" value="<%= @time_slot&.display_time %>" readonly>
       </div>
       <div class="col-md-4">
         <%= f.label :table_id, "Table", class: "form-label" %>
