@@ -33,7 +33,26 @@
               <td>
                 <%= link_to "View", reservation_path(reservation), class: "btn btn-sm btn-outline-dark" %>
                 <% unless reservation.cancelled? %>
-                  <%= button_to "Cancel", cancel_reservation_path(reservation), method: :patch, data: { confirm: "Are you sure you want to cancel this reservation?" }, class: "btn btn-sm btn-outline-danger ms-2" %>
+                  <button type="button" class="btn btn-sm btn-outline-danger ms-2" data-bs-toggle="modal" data-bs-target="#cancelReservationModal-<%= reservation.id %>">Cancel</button>
+
+                  <!-- Cancel Confirmation Modal -->
+                  <div class="modal fade" id="cancelReservationModal-<%= reservation.id %>" tabindex="-1" aria-labelledby="cancelReservationModalLabel-<%= reservation.id %>" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="cancelReservationModalLabel-<%= reservation.id %>">Cancel Reservation</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          Are you sure you want to cancel this reservation?
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                          <%= button_to "Yes, Cancel", cancel_reservation_path(reservation), method: :patch, form: { class: "d-inline" }, class: "btn btn-danger" %>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 <% end %>
               </td>
             </tr>
