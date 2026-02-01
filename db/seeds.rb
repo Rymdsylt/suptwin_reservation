@@ -34,11 +34,13 @@ time_slots = [
 
 days.each do |day|
   time_slots.each do |slot|
-    TimeSlot.find_or_create_by!(
-      day: day,
-      start_time: Time.parse(slot[:start]),
-      end_time: Time.parse(slot[:end])
-    )
+    # Parse times with explicit format
+    start_t = Time.parse("2000-01-01 #{slot[:start]}:00")
+    end_t = Time.parse("2000-01-01 #{slot[:end]}:00")
+    
+    unless TimeSlot.exists?(day: day, start_time: start_t)
+      TimeSlot.create!(day: day, start_time: start_t, end_time: end_t)
+    end
   end
 end
 puts "#{TimeSlot.count} time slots created"
