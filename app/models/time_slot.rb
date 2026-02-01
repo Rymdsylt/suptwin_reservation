@@ -5,6 +5,7 @@ class TimeSlot < ApplicationRecord
   validates :start_time, presence: true
   validates :end_time, presence: true
   validates :day, presence: true
+    validates :day, uniqueness: { scope: [:start_time, :end_time], message: "test message" }
   validate :end_time_after_start_time
 
   def display_time
