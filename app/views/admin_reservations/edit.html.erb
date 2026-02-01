@@ -1,0 +1,74 @@
+<div class="container py-5">
+  <h1 class="fw-bold mb-4">Edit Reservation</h1>
+  <%= link_to "Back to Reservations", admin_reservations_path, class: "btn btn-outline-secondary mb-4" %>
+
+  <div class="card">
+    <div class="card-body">
+      <%= form_with model: @reservation, url: admin_reservation_path(@reservation), method: :patch, local: true do |f| %>
+        <% if @reservation.errors.any? %>
+          <div class="alert alert-danger">
+            <ul class="mb-0">
+              <% @reservation.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="row">
+          <div class="col-md-6">
+            <h5 class="fw-bold mb-3">Reservation Details</h5>
+            
+            <div class="mb-3">
+              <%= f.label :date, class: "form-label" %>
+              <%= f.date_field :date, class: "form-control", required: true %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :time_slot_id, "Time Slot", class: "form-label" %>
+              <%= f.select :time_slot_id, @time_slots.map { |ts| ["#{ts.day}: #{ts.display_time}", ts.id] }, {}, class: "form-select", required: true %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :table_id, "Table", class: "form-label" %>
+              <%= f.select :table_id, @tables.map { |t| ["#{t.name} (Capacity: #{t.capacity})", t.id] }, {}, class: "form-select", required: true %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :party_size, class: "form-label" %>
+              <%= f.number_field :party_size, class: "form-control", min: 1, required: true %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :status, class: "form-label" %>
+              <%= f.select :status, [['Confirmed', 'confirmed'], ['Cancelled', 'cancelled']], {}, class: "form-select" %>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <h5 class="fw-bold mb-3">Contact Details</h5>
+
+            <div class="mb-3">
+              <%= f.label :contact_name, class: "form-label" %>
+              <%= f.text_field :contact_name, class: "form-control", required: true %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :contact_email, class: "form-label" %>
+              <%= f.email_field :contact_email, class: "form-control", required: true %>
+            </div>
+
+            <div class="mb-3">
+              <%= f.label :contact_phone, class: "form-label" %>
+              <%= f.telephone_field :contact_phone, class: "form-control" %>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+        <%= f.submit "Update Reservation", class: "btn btn-dark" %>
+        <%= link_to "Cancel", admin_reservations_path, class: "btn btn-outline-secondary ms-2" %>
+      <% end %>
+    </div>
+  </div>
+</div>

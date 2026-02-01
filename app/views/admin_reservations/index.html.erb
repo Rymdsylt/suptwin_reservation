@@ -1,0 +1,78 @@
+<div class="container py-5">
+  <h1 class="fw-bold mb-4">Manage Reservations</h1>
+  <%= link_to "Back to Dashboard", admin_dashboard_path, class: "btn btn-outline-secondary mb-3" %>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="get" class="row g-3">
+        <div class="col-md-3">
+          <label for="date" class="form-label">Filter by Date</label>
+          <input type="date" name="date" id="date" value="<%= params[:date] %>" class="form-control">
+        </div>
+        <div class="col-md-3">
+          <label for="status" class="form-label">Filter by Status</label>
+          <select name="status" id="status" class="form-select">
+            <option value="">All</option>
+            <option value="confirmed" <%= 'selected' if params[:status] == 'confirmed' %>>Confirmed</option>
+            <option value="cancelled" <%= 'selected' if params[:status] == 'cancelled' %>>Cancelled</option>
+          </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+          <button type="submit" class="btn btn-dark">Filter</button>
+          <%= link_to "Clear", admin_reservations_path, class: "btn btn-outline-secondary ms-2" %>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead class="table-light">
+        <tr>
+          <th>ID</th>
+          <th>Date</th>
+          <th>Time Slot</th>
+          <th>Table</th>
+          <th>Customer</th>
+          <th>Contact</th>
+          <th>Party Size</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @reservations.each do |r| %>
+          <tr>
+            <td><%= r.id %></td>
+            <td><%= r.date.strftime('%b %d, %Y') %></td>
+            <td><%= r.time_slot.display_time %></td>
+            <td><%= r.table.name %> (Cap: <%= r.table.capacity %>)</td>
+            <td><%= r.user.email %></td>
+            <td>
+              <small>
+                <strong><%= r.contact_name %></strong><br>
+                <%= mail_to r.contact_email, r.contact_email %><br>
+                <% if r.contact_phone.present? %>
+                  <%= link_to r.contact_phone, "tel:#{r.contact_phone}" %>
+                <% end %>
+              </small>
+            </td>
+            <td><%= r.party_size %></td>
+            <td>
+              <span class="badge <%= r.cancelled? ? 'bg-danger' : 'bg-success' %>">
+                <%= r.status.capitalize %>
+              </span>
+            </td>
+            <td>
+              <%= link_to "View", admin_reservation_path(r), class: "btn btn-sm btn-outline-dark" %>
+              <%= link_to "Edit", edit_admin_reservation_path(r), class: "btn btn-sm btn-outline-primary" %>
+              <% unless r.cancelled? %>
+                <%= button_to "Cancel", cancel_admin_reservation_path(r), method: :patch, data: { confirm: "Cancel this reservation?" }, class: "btn btn-sm btn-outline-danger" %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,4 +1,12 @@
 Rails.application.routes.draw do
+  resources :admin_time_slots, except: [:show]
+  resources :admin_tables, except: [:show]
+  resources :admin_reservations, only: [:index, :show, :edit, :update] do
+    member do
+      patch :cancel
+    end
+  end
+  get "admin/calendar", to: "admin_calendar#index", as: :admin_calendar
   root "pages#home"
 
   get "login", to: "sessions#new"
@@ -16,6 +24,8 @@ Rails.application.routes.draw do
       patch :cancel
     end
   end
+
+  get "admin", to: "admin#dashboard", as: :admin_dashboard
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

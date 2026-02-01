@@ -1,0 +1,27 @@
+<div class="container py-5">
+  <h1 class="fw-bold mb-4">Manage Tables</h1>
+  <%= link_to "Add Table", new_admin_table_path, class: "btn btn-dark mb-3" %>
+  <%= link_to "Back to Dashboard", admin_dashboard_path, class: "btn btn-outline-secondary mb-3 ms-2" %>
+
+  <table class="table table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th>Name</th>
+        <th>Capacity (Max People)</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @tables.each do |table| %>
+        <tr>
+          <td><%= table.name %></td>
+          <td><%= table.capacity %></td>
+          <td>
+            <%= link_to "Edit", edit_admin_table_path(table), class: "btn btn-sm btn-outline-dark" %>
+            <%= button_to "Delete", admin_table_path(table), method: :delete, data: { confirm: "Delete this table? This will also delete all its reservations." }, class: "btn btn-sm btn-outline-danger ms-2" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
