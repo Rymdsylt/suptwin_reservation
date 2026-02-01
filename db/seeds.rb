@@ -16,7 +16,8 @@ customer = User.find_or_create_by!(email: "customer@test.com") do |user|
 end
 puts "Test customer created: #{customer.email}"
 
-# Create time slots (hourly from 11 AM to 10 PM)
+# Create time slots (hourly from 11 AM to 10 PM for each day)
+days = %w[Monday Tuesday Wednesday Thursday Friday Saturday Sunday]
 time_slots = [
   { start: "11:00", end: "12:00" },
   { start: "12:00", end: "13:00" },
@@ -31,11 +32,14 @@ time_slots = [
   { start: "21:00", end: "22:00" }
 ]
 
-time_slots.each do |slot|
-  TimeSlot.find_or_create_by!(
-    start_time: Time.parse(slot[:start]),
-    end_time: Time.parse(slot[:end])
-  )
+days.each do |day|
+  time_slots.each do |slot|
+    TimeSlot.find_or_create_by!(
+      day: day,
+      start_time: Time.parse(slot[:start]),
+      end_time: Time.parse(slot[:end])
+    )
+  end
 end
 puts "#{TimeSlot.count} time slots created"
 
