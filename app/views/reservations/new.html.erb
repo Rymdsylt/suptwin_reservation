@@ -15,11 +15,12 @@
     <div class="row g-3">
       <div class="col-md-4">
         <%= f.label :date, class: "form-label" %>
-        <%= f.date_field :date, value: @reservation.date || Date.today, class: "form-control", min: Date.today, required: true %>
+        <%= f.date_field :date, value: @reservation.date || Date.today, class: "form-control", min: Date.today, required: true, readonly: true %>
       </div>
       <div class="col-md-4">
         <%= f.label :time_slot_id, "Time Slot", class: "form-label" %>
-        <%= f.collection_select :time_slot_id, TimeSlot.all.order(:start_time), :id, :display_time, { prompt: "Select time slot" }, { class: "form-select", required: true } %>
+        <%= hidden_field_tag 'reservation[time_slot_id]', @reservation.time_slot_id %>
+        <input type="text" class="form-control" value="<%= @time_slot&.display_time %>" readonly>
       </div>
       <div class="col-md-4">
         <%= f.label :table_id, "Table", class: "form-label" %>
@@ -50,8 +51,39 @@
     </div>
 
     <div class="mt-4">
-      <%= f.submit "Confirm Reservation", class: "btn btn-dark btn-lg" %>
+      <button type="button" class="btn btn-dark btn-lg" data-bs-toggle="modal" data-bs-target="#confirmReservationModal">Confirm Reservation</button>
       <%= link_to "Back to Availability", availability_path, class: "btn btn-outline-secondary ms-2" %>
     </div>
   <% end %>
+
+  <!-- Reservation Confirmation Modal -->
+  <div class="modal fade" id="confirmReservationModal" tabindex="-1" aria-labelledby="confirmReservationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmReservationModalLabel">Confirm Reservation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to confirm this reservation?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-dark" id="modalConfirmReservation">Yes, Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var modalConfirmBtn = document.getElementById('modalConfirmReservation');
+      if (modalConfirmBtn) {
+        modalConfirmBtn.addEventListener('click', function() {
+          var form = document.querySelector('form[action="/reservations"]');
+          if (form) { form.submit(); }
+        });
+      }
+    });
+  </script>
 </div>
