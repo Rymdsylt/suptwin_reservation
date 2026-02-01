@@ -1,0 +1,47 @@
+<div class="container py-5">
+  <h1 class="fw-bold mb-4">Reservation Details</h1>
+  <%= link_to "Back to Reservations", admin_reservations_path, class: "btn btn-outline-secondary mb-4" %>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <h5 class="fw-bold">Reservation Info</h5>
+          <p><strong>ID:</strong> <%= @reservation.id %></p>
+          <p><strong>Date:</strong> <%= @reservation.date.strftime('%A, %B %d, %Y') %></p>
+          <p><strong>Time:</strong> <%= @reservation.time_slot.display_time %></p>
+          <p><strong>Table:</strong> <%= @reservation.table.name %> (Capacity: <%= @reservation.table.capacity %>)</p>
+          <p><strong>Party Size:</strong> <%= @reservation.party_size %></p>
+          <p><strong>Status:</strong> 
+            <span class="badge <%= @reservation.cancelled? ? 'bg-danger' : 'bg-success' %>">
+              <%= @reservation.status.capitalize %>
+            </span>
+          </p>
+        </div>
+        <div class="col-md-6">
+          <h5 class="fw-bold">Customer Info</h5>
+          <p><strong>User:</strong> <%= @reservation.user.email %></p>
+          <p><strong>Contact Name:</strong> <%= @reservation.contact_name %></p>
+          <p><strong>Contact Email:</strong> <%= mail_to @reservation.contact_email %></p>
+          <p><strong>Contact Phone:</strong> 
+            <% if @reservation.contact_phone.present? %>
+              <%= link_to @reservation.contact_phone, "tel:#{@reservation.contact_phone}" %>
+            <% else %>
+              <span class="text-muted">Not provided</span>
+            <% end %>
+          </p>
+        </div>
+      </div>
+      <hr>
+      <p><strong>Created:</strong> <%= @reservation.created_at.strftime('%B %d, %Y at %I:%M %p') %></p>
+      <p><strong>Updated:</strong> <%= @reservation.updated_at.strftime('%B %d, %Y at %I:%M %p') %></p>
+      
+      <div class="mt-4">
+        <%= link_to "Edit", edit_admin_reservation_path(@reservation), class: "btn btn-primary" %>
+        <% unless @reservation.cancelled? %>
+          <%= button_to "Cancel Reservation", cancel_admin_reservation_path(@reservation), method: :patch, data: { confirm: "Cancel this reservation?" }, class: "btn btn-danger ms-2" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

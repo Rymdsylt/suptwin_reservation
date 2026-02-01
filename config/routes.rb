@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
   resources :admin_time_slots, except: [:show]
   resources :admin_tables, except: [:show]
+  resources :admin_reservations, only: [:index, :show, :edit, :update] do
+    member do
+      patch :cancel
+    end
+  end
   root "pages#home"
 
   get "login", to: "sessions#new"
