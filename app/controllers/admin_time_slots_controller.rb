@@ -40,6 +40,6 @@ class AdminTimeSlotsController < ApplicationController
   private
 
   def time_slot_params
-    params.require(:time_slot).permit(:start_time, :end_time)
+    params.require(:time_slot).permit(:day, :start_time, :end_time)
   end
 end
