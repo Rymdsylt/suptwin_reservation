@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       patch :cancel
     end
   end
+  get "admin/calendar", to: "admin_calendar#index", as: :admin_calendar
   root "pages#home"
 
   get "login", to: "sessions#new"

@@ -1,0 +1,69 @@
+<div class="container-fluid py-5">
+  <h1 class="fw-bold mb-4">Reservation Calendar</h1>
+  <%= link_to "Back to Dashboard", admin_dashboard_path, class: "btn btn-outline-secondary mb-3" %>
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <%= link_to "← Previous Week", admin_calendar_path(date: @start_of_week - 7.days), class: "btn btn-outline-dark" %>
+    <h4 class="mb-0"><%= @start_of_week.strftime('%B %d') %> - <%= @end_of_week.strftime('%B %d, %Y') %></h4>
+    <%= link_to "Next Week →", admin_calendar_path(date: @start_of_week + 7.days), class: "btn btn-outline-dark" %>
+  </div>
+
+  <div class="mb-3">
+    <span class="badge bg-success me-2">Available</span>
+    <span class="badge bg-warning text-dark me-2">Partially Booked</span>
+    <span class="badge bg-danger me-2">Fully Booked</span>
+    <span class="badge bg-secondary">Past</span>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered text-center">
+      <thead class="table-dark">
+        <tr>
+          <th style="min-width: 100px;">Time Slot</th>
+          <% @week_dates.each do |date| %>
+            <th style="min-width: 120px;">
+              <%= date.strftime('%a') %><br>
+              <small><%= date.strftime('%b %d') %></small>
+            </th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% @time_slots.each do |slot| %>
+          <tr>
+            <td class="align-middle fw-bold"><%= slot.display_time %></td>
+            <% @week_dates.each do |date| %>
+              <% availability = @availability[date][slot.id] %>
+              <% is_past = date < Date.today || (date == Date.today && slot.start_time.strftime("%H:%M") < Time.now.strftime("%H:%M")) %>
+              <% 
+                if is_past
+                  bg_class = "table-secondary"
+                elsif availability[:available] == 0
+                  bg_class = "table-danger"
+                elsif availability[:available] < availability[:total]
+                  bg_class = "table-warning"
+                else
+                  bg_class = "table-success"
+                end
+              %>
+              <td class="<%= bg_class %> align-middle">
+                <% if is_past %>
+                  <span class="text-muted">-</span>
+                <% else %>
+                  <strong><%= availability[:available] %></strong> / <%= availability[:total] %><br>
+                  <small class="text-muted">available</small>
+                  <% if availability[:reserved] > 0 %>
+                    <br>
+                    <a href="<%= admin_reservations_path(date: date, status: 'confirmed') %>" class="btn btn-sm btn-outline-dark mt-1">
+                      View (<%= availability[:reserved] %>)
+                    </a>
+                  <% end %>
+                <% end %>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
