@@ -1,0 +1,24 @@
+<div class="container py-5">
+  <h1 class="fw-bold mb-4">Edit Table</h1>
+  <%= form_with model: @table, url: admin_table_path(@table), method: :patch, local: true do |f| %>
+    <% if @table.errors.any? %>
+      <div class="alert alert-danger">
+        <ul class="mb-0">
+          <% @table.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <div class="mb-3">
+      <%= f.label :name, class: "form-label" %>
+      <%= f.text_field :name, class: "form-control", required: true %>
+    </div>
+    <div class="mb-3">
+      <%= f.label :capacity, "Capacity (Max People)", class: "form-label" %>
+      <%= f.number_field :capacity, class: "form-control", required: true, min: 1 %>
+    </div>
+    <%= f.submit "Update", class: "btn btn-dark" %>
+    <%= link_to "Back", admin_tables_path, class: "btn btn-outline-secondary ms-2" %>
+  <% end %>
+</div>
