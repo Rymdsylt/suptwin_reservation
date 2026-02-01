@@ -3,7 +3,7 @@ class ReservationsController < ApplicationController
 
   def availability
     @date = params[:date] ? Date.parse(params[:date]) : Date.today
-    @time_slots = TimeSlot.all.order(:start_time)
+    @time_slots = TimeSlot.where(day: @date.strftime("%A")).order(:start_time)
     @tables = Table.all.order(:name)
 
     # Get reservations for the selected date
