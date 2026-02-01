@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_31_062247) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_01_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -20,8 +20,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_31_062247) do
     t.string "contact_phone"
     t.datetime "created_at", null: false
     t.date "date"
-    t.integer "party_size"
-    t.integer "status"
+    t.integer "party_size", limit: 2
+    t.integer "status", limit: 2
     t.bigint "table_id", null: false
     t.bigint "time_slot_id", null: false
     t.datetime "updated_at", null: false
@@ -32,7 +32,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_31_062247) do
   end
 
   create_table "tables", force: :cascade do |t|
-    t.integer "capacity"
+    t.integer "capacity", limit: 2
     t.datetime "created_at", null: false
     t.string "name"
     t.datetime "updated_at", null: false
@@ -50,7 +50,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_31_062247) do
     t.datetime "created_at", null: false
     t.string "email"
     t.string "password_digest"
-    t.integer "role"
+    t.integer "role", limit: 2
     t.datetime "updated_at", null: false
   end
 
