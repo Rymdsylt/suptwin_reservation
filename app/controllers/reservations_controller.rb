@@ -6,12 +6,16 @@ class ReservationsController < ApplicationController
     @time_slots = TimeSlot.where(day: @date.strftime("%A")).order(:start_time)
     @tables = Table.all.order(:name)
 
-    # Get reservations for the selected date
     @reservations = Reservation.where(date: @date).where.not(status: :cancelled)
 
-    # Calculate available tables for each time slot
     @availability = {}
+    now = Time.zone.now
     @time_slots.each do |slot|
+      slot_datetime = Time.zone.local(@date.year, @date.month, @date.day, slot.start_time.hour, slot.start_time.min)
+      if @date == Date.today && slot_datetime <= now + 2.hours
+        @availability[slot.id] = []
+        next
+      end
       reserved_table_ids = @reservations.where(time_slot: slot).pluck(:table_id)
       available_tables = @tables.where.not(id: reserved_table_ids)
       @availability[slot.id] = available_tables
